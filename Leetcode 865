@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct No {
+    int val;
+    struct No *esq;
+    struct No *dir;
+};
+
+struct No* novoNo(int val) {
+    struct No* novoNo = (struct No*)malloc(sizeof(struct No));
+    novoNo->val = val;
+    novoNo->esq = NULL;
+    novoNo->dir = NULL;
+    return novoNo;
+}
+
+int profundidade(struct No* raiz) {
+    if (raiz == NULL) {
+        return 0;
+    } else {
+        int profundidadeEsq = profundidade(raiz->esq);
+        int profundidadeDir = profundidade(raiz->dir);
+
+        if (profundidadeEsq > profundidadeDir) {
+            return 1 + profundidadeEsq;
+        } else {
+            return 1 + profundidadeDir;
+        }
+    }
+}
+
+struct No* subarvoreComTodosMaisProfundos(struct No* raiz) {
+    if (raiz == NULL) {
+        return NULL;
+    } else {
+        int profundidadeEsq = profundidade(raiz->esq);
+        int profundidadeDir = profundidade(raiz->dir);
+
+        if (profundidadeEsq == profundidadeDir) {
+            return raiz;
+        } else {
+            if (profundidadeEsq > profundidadeDir) {
+                return subarvoreComTodosMaisProfundos(raiz->esq);
+            } else {
+                return subarvoreComTodosMaisProfundos(raiz->dir);
+            }
+        }
+    }
+}
+
+int main() {
+    struct No* raiz = novoNo(3);
+    raiz->esq = novoNo(5);
+    raiz->dir = novoNo(1);
+    raiz->esq->esq = novoNo(6);
+    raiz->esq->dir = novoNo(2);
+    raiz->dir->esq = novoNo(0);
+    raiz->dir->dir = novoNo(8);
+    raiz->esq->dir->esq = novoNo(7);
+    raiz->esq->dir->dir = novoNo(4);
+
+    struct No* resultado = subarvoreComTodosMaisProfundos(raiz);
+    printf("O valor da menor subárvore contendo todos os nós mais profundos é: %d\n", resultado->val);
+
+    return 0;
+}
